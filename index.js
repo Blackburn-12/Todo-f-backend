@@ -12,7 +12,10 @@ const PORT = process.env.PORT || 8000;
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors(process.env.CORS_ORIGIN));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
 
 
 const DB_CONNECT = async () => {
