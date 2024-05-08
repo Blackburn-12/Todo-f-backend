@@ -2,25 +2,35 @@ import express, { response } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import { PostModel } from "./models/post.models.js";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 
 dotenv.config({
-  path: './env',
-})
+  path: "./env",
+});
 const PORT = process.env.PORT || 8000;
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+app.use((request, response, next) => {
+  response.setHeader("Access-Control-Allow-Origin", "*");
+  response.setHeader("Access-Control-Allow-Credentials", "true");
+  response.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,OPTIONS,POST,PUT"
+  );
+  response.setHeader(
+    "Access-Control-Allow-Headers",
+    "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+  );
   next();
 });
 
-
 const DB_CONNECT = async () => {
   try {
-    const connectionInstance = await mongoose.connect(`${process.env.MONGO_URI}`);
+    const connectionInstance = await mongoose.connect(
+      `${process.env.MONGO_URI}`
+    );
     console.log(
       `\n Mongo is connected and hosted at ${connectionInstance.connection.host}`
     );
@@ -90,17 +100,21 @@ app.put("/updatepost/:id", async (request, response) => {
     if (!mongoose.Types.ObjectId.isValid(postID)) {
       return response.status(400).json({
         message: "Invalid post ID",
-        status: false
+        status: false,
       });
     }
 
     // Update the post
-    const updatePost = await PostModel.findByIdAndUpdate(postID, { title, description }, { new: true });
+    const updatePost = await PostModel.findByIdAndUpdate(
+      postID,
+      { title, description },
+      { new: true }
+    );
 
     if (!updatePost) {
       return response.status(404).json({
         message: "Post not found",
-        status: false
+        status: false,
       });
     }
 
@@ -116,7 +130,6 @@ app.put("/updatepost/:id", async (request, response) => {
     });
   }
 });
-
 
 app.delete("/deletepost/:id", async (request, response) => {
   try {
@@ -134,7 +147,6 @@ app.delete("/deletepost/:id", async (request, response) => {
       status: false,
     });
   }
-
 });
 
 app.get("/", (request, response) => {
