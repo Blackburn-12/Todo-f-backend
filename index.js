@@ -41,7 +41,7 @@ const DB_CONNECT = async () => {
 
 DB_CONNECT();
 
-app.post("/createpost", async (request, response) => {
+app.post("/api/createpost", async (request, response) => {
   try {
     console.log("request", request.body);
     const { title, description, userId } = request.body;
@@ -74,7 +74,7 @@ app.post("/createpost", async (request, response) => {
   }
 });
 
-app.get("/getpost", async (request, response) => {
+app.get("/api/getpost", async (request, response) => {
   try {
     const postGet = await PostModel.find({});
     response.json({
@@ -91,7 +91,7 @@ app.get("/getpost", async (request, response) => {
   }
 });
 
-app.put("/updatepost/:id", async (request, response) => {
+app.put("/api/updatepost/:id", async (request, response) => {
   try {
     const postID = request.params.id;
     const { title, description } = request.body;
@@ -131,7 +131,7 @@ app.put("/updatepost/:id", async (request, response) => {
   }
 });
 
-app.delete("/deletepost/:id", async (request, response) => {
+app.delete("/api/deletepost/:id", async (request, response) => {
   try {
     const postID = request.params.id;
     const deletePost = await PostModel.findByIdAndDelete(postID);
